@@ -1,0 +1,51 @@
+package com.example.mytodoapp.viewmodel
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mytodoapp.TodoApp.Companion.TAG
+import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.repository.TodoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+
+@HiltViewModel
+class TodoViewModel @Inject constructor(private val repository: TodoRepository): ViewModel() {
+
+    private val _tasksFlow = MutableStateFlow<List<Task>>(emptyList())
+    val tasksFlow: StateFlow<List<Task>> = _tasksFlow
+
+    fun getAllTasks() {
+        viewModelScope.launch {
+            repository.getAllTasks().catch {
+                Log.d(TAG, "some error occurred while getting all tasks $it")
+            }.collect {
+                _tasksFlow.value = it
+            }
+        }
+    }
+
+    fun insertTask(task: Task) {
+        viewModelScope.launch {
+            repository.insertTask(task)
+        }
+    }
+
+    fun updateTask(task: Task) {
+        viewModelScope.launch {
+            repository.updateTask(task)
+        }
+    }
+
+    fun delete(task: Task) {
+        viewModelScope.launch {
+            repository.deleteTask(task)
+        }
+    }
+
+}

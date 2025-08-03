@@ -62,6 +62,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // NAVIGATION
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // ROOM
+    implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 
     // HILT

@@ -5,15 +5,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.mytodoapp.ui.theme.MyToDoAppTheme
+import com.example.mytodoapp.views.FloatingActionButton
 import com.example.mytodoapp.views.Navigation
 import com.example.mytodoapp.views.TopAppBarView
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : ComponentActivity() {
+
+@AndroidEntryPoint
+class TodoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -22,7 +27,10 @@ class MainActivity : ComponentActivity() {
                 val navController: NavHostController = rememberNavController()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    topBar = { TopAppBarView() }) { innerPadding ->
+                    topBar = { TopAppBarView() },
+                    floatingActionButton = { FloatingActionButton() },
+                    floatingActionButtonPosition =  FabPosition.End
+                    ) { innerPadding ->
                     Navigation(innerPadding, navController)
                 }
             }

@@ -9,9 +9,12 @@ import androidx.navigation.compose.composable
 
 @Composable
 fun Navigation(innerPadding: PaddingValues, navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "no_data_view") {
+    NavHost(navController = navController, startDestination = "data_view") {
         composable("no_data_view") {
             NoDataView(innerPadding)
+        }
+        composable("data_view") {
+            DataView(innerPadding)
         }
     }
 }
