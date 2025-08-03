@@ -5,12 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun Navigation(innerPadding: PaddingValues) {
-    val navController: NavHostController = rememberNavController()
+fun Navigation(innerPadding: PaddingValues, navController: NavHostController) {
     NavHost(navController = navController, startDestination = "no_data_view") {
         composable("no_data_view") {
             NoDataView(innerPadding)
