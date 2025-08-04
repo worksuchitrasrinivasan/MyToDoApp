@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mytodoapp.R
-import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.viewmodel.TodoViewModel
 
 
@@ -24,7 +24,7 @@ fun DataView(innerPadding: PaddingValues, viewModel: TodoViewModel = hiltViewMod
 
 //    val tasksState by viewModel.tasksFlow.collectAsState()
 
-    val tasksState = listOf<Task>(Task(1, "hello task", "test desc", false))
+    val tasksState = listOf<TaskDTO>(TaskDTO(1, "hello task", "test desc", false))
 
     Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
         Text(text = stringResource(R.string.all_tasks))

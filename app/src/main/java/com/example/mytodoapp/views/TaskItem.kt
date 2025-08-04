@@ -10,10 +10,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import com.example.mytodoapp.R
-import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.dto.TaskDTO
 
 @Composable
-fun TaskItem(task: Task) {
+fun TaskItem(task: TaskDTO) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
             task.isDone,
