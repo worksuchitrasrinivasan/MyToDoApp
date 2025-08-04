@@ -3,4 +3,8 @@
     <string name="no_task">No Tasks</string>
     <string name="you_have_no_tasks">You have no tasks!</string>
     <string name="all_tasks">All tasks</string>
+    <string name="title">title</string>
+    <string name="task_title">Task title</string>
+    <string name="task_description">Task description</string>
+    <string name="description">description</string>
 </resources>
