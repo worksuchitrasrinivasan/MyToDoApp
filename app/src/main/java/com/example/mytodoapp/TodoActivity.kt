@@ -12,7 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.mytodoapp.ui.theme.MyToDoAppTheme
 import com.example.mytodoapp.views.FloatingActionButton
-import com.example.mytodoapp.views.Navigation
+import com.example.mytodoapp.views.Navigation.Navigation
 import com.example.mytodoapp.views.TopAppBarView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,7 +28,7 @@ class TodoActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = { TopAppBarView() },
-                    floatingActionButton = { FloatingActionButton() },
+                    floatingActionButton = { FloatingActionButton(navController) },
                     floatingActionButtonPosition =  FabPosition.End
                     ) { innerPadding ->
                     Navigation(innerPadding, navController)

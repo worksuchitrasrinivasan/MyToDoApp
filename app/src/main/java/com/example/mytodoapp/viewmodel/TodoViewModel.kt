@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mytodoapp.TodoApp.Companion.TAG
+import com.example.mytodoapp.dto.TaskDTO
+import com.example.mytodoapp.dto.toTaskDTO
 import com.example.mytodoapp.model.Task
 import com.example.mytodoapp.repository.TodoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,15 +19,17 @@ import javax.inject.Inject
 @HiltViewModel
 class TodoViewModel @Inject constructor(private val repository: TodoRepository): ViewModel() {
 
-    private val _tasksFlow = MutableStateFlow<List<Task>>(emptyList())
-    val tasksFlow: StateFlow<List<Task>> = _tasksFlow
+    private val _tasksFlow = MutableStateFlow<List<TaskDTO>>(emptyList())
+    val tasksFlow: StateFlow<List<TaskDTO>> = _tasksFlow
 
     fun getAllTasks() {
         viewModelScope.launch {
             repository.getAllTasks().catch {
                 Log.d(TAG, "some error occurred while getting all tasks $it")
             }.collect {
-                _tasksFlow.value = it
+                _tasksFlow.value = it.map { task ->
+                    task.toTaskDTO()
+                }
             }
         }
     }
