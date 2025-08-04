@@ -24,9 +24,11 @@ class TodoViewModel @Inject constructor(private val repository: TodoRepository):
 
     fun getAllTasks() {
         viewModelScope.launch {
+            Log.d(TAG, "getAllTasks()")
             repository.getAllTasks().catch {
                 Log.d(TAG, "some error occurred while getting all tasks $it")
             }.collect {
+                Log.d(TAG, "newTaskList: $it")
                 _tasksFlow.value = it.map { task ->
                     task.toTaskDTO()
                 }
@@ -36,19 +38,23 @@ class TodoViewModel @Inject constructor(private val repository: TodoRepository):
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
+            Log.d(TAG, "insertTask: $task")
             repository.insertTask(task)
+            getAllTasks()
         }
     }
 
     fun updateTask(task: Task) {
         viewModelScope.launch {
             repository.updateTask(task)
+            getAllTasks()
         }
     }
 
     fun delete(task: Task) {
         viewModelScope.launch {
             repository.deleteTask(task)
+            getAllTasks()
         }
     }
 

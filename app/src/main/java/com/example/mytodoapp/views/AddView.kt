@@ -9,41 +9,46 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mytodoapp.R
-import com.example.mytodoapp.dto.TaskDTO
-import com.example.mytodoapp.dto.toTask
 import com.example.mytodoapp.model.Task
 
 
 @Composable
-fun EditView(innerPadding: PaddingValues,
-             navController: NavHostController,
-             setFabAction: (()->Unit) -> Unit,
-             task: TaskDTO?= null,
-             save: (task: Task?) -> Unit) {
+fun AddView(innerPadding: PaddingValues,
+            navController: NavHostController,
+            setFabAction: (()->Unit) -> Unit,
+            save: (task: Task) -> Unit) {
 
-    val newTask = task ?: TaskDTO()
+    var title by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(innerPadding)) {
-        TextField(newTask.title, onValueChange = { it ->
-            newTask.title = it
+        TextField(title, onValueChange = { it ->
+            title = it
         }, placeholder = { Text(stringResource(R.string.title)) }, label = { Text(stringResource(R.string.task_title)) })
 
         Spacer(Modifier.size(40.dp))
 
-        TextField(value = newTask.description, onValueChange = {
-            it -> newTask.title = it
+        TextField(value = description, onValueChange = {
+                it -> description = it
         }, placeholder = { Text(stringResource(R.string.description)) }, label = { Text(stringResource(R.string.task_description)) })
     }
 
     LaunchedEffect(Unit) {
         setFabAction {
-            save(newTask.toTask())
+            if(title.isNotEmpty()) {
+                save(Task(0, title, description, false))
+            }
             navController.popBackStack()
         }
     }
+
 }

@@ -10,16 +10,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.mytodoapp.R
+import com.example.mytodoapp.views.Navigation.ADD_VIEW
 
 
 @Composable
-fun NoDataView(innerPadding: PaddingValues) {
+fun NoDataView(innerPadding: PaddingValues, navController: NavHostController, setFabAction: (() -> Unit) -> Unit) {
+
+    LaunchedEffect(Unit) {
+        setFabAction {
+            navController.navigate(ADD_VIEW)
+        }
+    }
 
     Box(modifier = Modifier.padding(innerPadding).fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {

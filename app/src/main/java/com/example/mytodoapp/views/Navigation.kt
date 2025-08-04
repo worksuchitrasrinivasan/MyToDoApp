@@ -18,55 +18,68 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 object Navigation {
 
     const val DATA_VIEW = "data_view"
     const val NO_DATA_VIEW = "no_data_view"
     const val EDIT_VIEW = "edit_view"
 
+    const val ADD_VIEW = "add_view"
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @Composable
-    fun Navigation(innerPadding: PaddingValues, navController: NavHostController, todoViewModel: TodoViewModel = hiltViewModel()) {
+    fun Navigation(
+        innerPadding: PaddingValues,
+        navController: NavHostController,
+        setFabAction: (()->Unit) -> Unit,
+        todoViewModel: TodoViewModel = hiltViewModel()
+    ) {
 
         val scope = rememberCoroutineScope()
 
         NavHost(navController = navController, startDestination = DATA_VIEW) {
 
             composable(NO_DATA_VIEW) {
-                NoDataView(innerPadding)
+                NoDataView(innerPadding, navController, setFabAction)
             }
 
             composable(DATA_VIEW) {
-                DataView(innerPadding)
+                DataView(innerPadding, navController, setFabAction)
+            }
+
+            composable(ADD_VIEW) {
+                AddView(innerPadding, navController, setFabAction) { newTask ->
+                    scope.launch {
+                        todoViewModel.insertTask(newTask)
+                    }
+                }
             }
 
             composable(
-                EDIT_VIEW,
+                "$EDIT_VIEW/{task}",
                 arguments = listOf(
                     navArgument("task") { type = TaskNavType}
                 )
             ) { backStackEntry ->
                 val task = backStackEntry.arguments?.getParcelable("task", TaskDTO::class.java)
-                EditView(innerPadding, task) { newTask ->
+                EditView(innerPadding, navController, setFabAction, task) { newTask ->
                     scope.launch {
-                        if(task == null) {
-                            todoViewModel.insertTask(newTask)
-                        } else {
-                            todoViewModel.updateTask(newTask)
+                        newTask?.let {
+                            todoViewModel.updateTask(it)
                         }
                     }
                 }
             }
-
         }
     }
 
-    object TaskNavType: NavType<TaskDTO>(isNullableAllowed = true) {
+    object TaskNavType: NavType<TaskDTO>(isNullableAllowed = false) {
+
         override fun put( bundle: SavedState, key: String, value: TaskDTO) {
             return bundle.putParcelable(key, value)
         }
 
-
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun get(bundle: SavedState, key: String): TaskDTO? {
             return bundle.getParcelable(key, TaskDTO::class.java)
         }
