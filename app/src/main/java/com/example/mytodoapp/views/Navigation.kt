@@ -14,8 +14,7 @@ object Navigation {
 
     @Composable
     fun Navigation(innerPadding: PaddingValues, navController: NavHostController) {
-        NavHost(navController = navController, startDestination = DATA_VIEW) {
-
+        NavHost(navController = navController, startDestination = NO_DATA_VIEW) {
             composable(NO_DATA_VIEW) {
                 NoDataView(innerPadding)
             }
