@@ -1,9 +1,7 @@
 package com.example.mytodoapp.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mytodoapp.TodoApp.Companion.TAG
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.dto.toTaskDTO
 import com.example.mytodoapp.model.Task
@@ -13,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -24,11 +23,11 @@ class TodoViewModel @Inject constructor(private val repository: TodoRepository):
 
     fun getAllTasks() {
         viewModelScope.launch {
-            Log.d(TAG, "getAllTasks()")
+            Timber.d("getAllTasks()")
             repository.getAllTasks().catch {
-                Log.d(TAG, "some error occurred while getting all tasks $it")
+                Timber.d( "some error occurred while getting all tasks $it")
             }.collect {
-                Log.d(TAG, "newTaskList: $it")
+                Timber.d( "newTaskList: $it")
                 _tasksFlow.value = it.map { task ->
                     task.toTaskDTO()
                 }
@@ -38,23 +37,20 @@ class TodoViewModel @Inject constructor(private val repository: TodoRepository):
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
-            Log.d(TAG, "insertTask: $task")
+            Timber.d( "insertTask: $task")
             repository.insertTask(task)
-            getAllTasks()
         }
     }
 
     fun updateTask(task: Task) {
         viewModelScope.launch {
             repository.updateTask(task)
-            getAllTasks()
         }
     }
 
     fun delete(task: Task) {
         viewModelScope.launch {
             repository.deleteTask(task)
-            getAllTasks()
         }
     }
 

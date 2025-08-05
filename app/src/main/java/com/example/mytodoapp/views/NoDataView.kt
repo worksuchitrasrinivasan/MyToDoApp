@@ -3,14 +3,14 @@ package com.example.mytodoapp.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -18,23 +18,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mytodoapp.R
-import com.example.mytodoapp.views.Navigation.ADD_VIEW
 
 
 @Composable
-fun NoDataView(innerPadding: PaddingValues, navController: NavHostController, setFabAction: (() -> Unit) -> Unit) {
+fun NoDataView(navController: NavHostController) {
 
-    LaunchedEffect(Unit) {
-        setFabAction {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { TopAppBarView() },
+        floatingActionButton = { FloatingActionButton(NO_DATA_VIEW) {
             navController.navigate(ADD_VIEW)
+        } },
+        floatingActionButtonPosition = FabPosition.End
+    ) { innerPadding ->
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
+                Text(text = stringResource(R.string.you_have_no_tasks))
+            }
         }
     }
 
-    Box(modifier = Modifier.padding(innerPadding).fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
-            Text(text = stringResource(R.string.you_have_no_tasks))
-        }
-    }
 
 }

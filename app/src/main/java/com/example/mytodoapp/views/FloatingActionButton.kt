@@ -8,8 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.example.mytodoapp.R
-import com.example.mytodoapp.views.Navigation.ADD_VIEW
-import com.example.mytodoapp.views.Navigation.EDIT_VIEW
+
 
 @Composable
 fun FloatingActionButton(route: String?, onClick: () -> Unit) {
@@ -22,6 +21,5 @@ fun FloatingActionButton(route: String?, onClick: () -> Unit) {
         } else {
             Icon(Icons.Filled.Add, "Add", tint = colorResource(R.color.white))
         }
-
     }
 }

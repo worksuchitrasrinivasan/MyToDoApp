@@ -7,26 +7,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
+import com.example.mytodoapp.dto.toTask
+import com.example.mytodoapp.model.Task
 
 @Composable
-fun TaskItem(task: TaskDTO) {
+fun TaskItem(task: TaskDTO, update: (task: Task) -> Unit) {
+
     Row(verticalAlignment = Alignment.CenterVertically) {
+
         Checkbox(
             task.isDone,
             colors = CheckboxDefaults.colors(checkedColor = colorResource(R.color.colorAccent)),
             onCheckedChange = {
                 task.isDone = it
-            },
+                update(task.toTask())
+            }
         )
 
-        if(task.isDone) {
-            Text(text = task.title, style = TextStyle(textDecoration = TextDecoration.LineThrough))
-        } else {
-            Text(text = task.title)
-        }
+        Text(text = task.title, textDecoration = if(task.isDone) {
+                TextDecoration.LineThrough
+            } else {
+                null
+            }
+        )
+
     }
 }
