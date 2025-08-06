@@ -11,12 +11,12 @@ import com.example.mytodoapp.R
 
 
 @Composable
-fun FloatingActionButton(route: String?, onClick: () -> Unit) {
+fun FloatingActionButton(route: Screen, onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
         containerColor = colorResource(R.color.colorAccent)
     ) {
-        if (route == EDIT_VIEW || route == ADD_VIEW) {
+        if (route == Screen.EditScreen || route == Screen.AddScreen) {
             Icon(Icons.Filled.Done, "Done", tint = colorResource(R.color.white))
         } else {
             Icon(Icons.Filled.Add, "Add", tint = colorResource(R.color.white))

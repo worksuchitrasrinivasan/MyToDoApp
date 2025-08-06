@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.dto.toTask
@@ -21,18 +21,16 @@ import com.example.mytodoapp.model.Task
 
 
 @Composable
-fun EditView( navController: NavHostController,
-             task: TaskDTO?= null,
-             save: (task: Task?) -> Unit) {
+fun EditView( backStack: NavBackStack, task: TaskDTO?= null, save: (task: Task?) -> Unit) {
 
     val newTask = task ?: TaskDTO()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarView() },
-        floatingActionButton = { FloatingActionButton(EDIT_VIEW) {
+        floatingActionButton = { FloatingActionButton(Screen.EditScreen) {
             save(newTask.toTask())
-            navController.popBackStack()
+            backStack.removeLastOrNull()
         } },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->

@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ import timber.log.Timber
 
 
 @Composable
-fun DataView(navController: NavController, viewModel: TodoViewModel = hiltViewModel()) {
+fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
     val tasksState by viewModel.tasksFlow.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -47,8 +47,8 @@ fun DataView(navController: NavController, viewModel: TodoViewModel = hiltViewMo
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarView() },
-        floatingActionButton = { FloatingActionButton(DATA_VIEW) {
-            navController.navigate(ADD_VIEW)
+        floatingActionButton = { FloatingActionButton(Screen.DataScreen) {
+            backStack.add(Screen.AddScreen)
         } },
         floatingActionButtonPosition = FabPosition.End,
         snackbarHost = { SnackbarHost(snackbarHostState) },

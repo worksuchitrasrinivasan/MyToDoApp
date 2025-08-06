@@ -21,14 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.model.Task
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun AddView( navController: NavHostController, save: (task: Task) -> Unit) {
+fun AddView( backStack: NavBackStack, save: (task: Task) -> Unit) {
 
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
@@ -38,10 +38,10 @@ fun AddView( navController: NavHostController, save: (task: Task) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarView() },
-        floatingActionButton = { FloatingActionButton(ADD_VIEW) {
+        floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             if(title.isNotEmpty()) {
                 save(Task(0, title, description, false))
-                navController.popBackStack()
+                backStack.removeLastOrNull()
             } else {
                 scope.launch {
                     snackbarHostState.showSnackbar("Task with empty title can't be added")
