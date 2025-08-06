@@ -42,8 +42,8 @@ fun NavGraph(modifier: Modifier = Modifier, todoViewModel: TodoViewModel = hiltV
             }
 
 
-            entry<Screen.EditScreen> {
-                EditView(backstack) { newTask ->
+            entry<Screen.EditScreen> { key ->
+                EditView(backstack, key.task) { newTask ->
                     scope.launch {
                         newTask?.let {
                             todoViewModel.updateTask(it)

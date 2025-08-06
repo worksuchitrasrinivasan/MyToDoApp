@@ -1,6 +1,7 @@
 package com.example.mytodoapp.views
 
 import androidx.navigation3.runtime.NavKey
+import com.example.mytodoapp.dto.TaskDTO
 import kotlinx.serialization.Serializable
 
 
@@ -10,7 +11,7 @@ sealed class Screen: NavKey {
     @Serializable
     data object NoDataScreen: Screen()
     @Serializable
-    data object EditScreen: Screen()
+    class EditScreen(val task: TaskDTO): Screen()
     @Serializable
     data object AddScreen: Screen()
 }

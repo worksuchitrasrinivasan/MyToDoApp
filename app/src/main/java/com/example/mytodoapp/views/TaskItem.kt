@@ -1,11 +1,13 @@
 package com.example.mytodoapp.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextDecoration
 import com.example.mytodoapp.R
@@ -14,9 +16,9 @@ import com.example.mytodoapp.dto.toTask
 import com.example.mytodoapp.model.Task
 
 @Composable
-fun TaskItem(task: TaskDTO, update: (task: Task) -> Unit) {
+fun TaskItem(task: TaskDTO, edit: (task: TaskDTO) -> Unit, update: (task: Task) -> Unit) {
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier.clickable{ edit(task) } , verticalAlignment = Alignment.CenterVertically) {
 
         Checkbox(
             task.isDone,

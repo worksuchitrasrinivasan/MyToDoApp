@@ -58,7 +58,7 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
             Spacer(Modifier.size(30.dp))
             LazyColumn {
                 items(items=tasksState, key = { it.id }) { task ->
-                    TaskItem(task) { newTask ->
+                    TaskItem(task, { backStack.add(Screen.EditScreen(it)) }) { newTask ->
 
                         viewModel.updateTask(newTask)
                         viewModel.getAllTasks()

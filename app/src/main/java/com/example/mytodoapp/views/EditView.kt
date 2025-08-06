@@ -21,30 +21,30 @@ import com.example.mytodoapp.model.Task
 
 
 @Composable
-fun EditView( backStack: NavBackStack, task: TaskDTO?= null, save: (task: Task?) -> Unit) {
-
-    val newTask = task ?: TaskDTO()
+fun EditView( backStack: NavBackStack, task: TaskDTO, save: (task: Task?) -> Unit) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarView() },
-        floatingActionButton = { FloatingActionButton(Screen.EditScreen) {
-            save(newTask.toTask())
+        floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
+            save(task.toTask())
             backStack.removeLastOrNull()
         } },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
 
         Column(modifier = Modifier.padding(innerPadding)) {
-            TextField(newTask.title, onValueChange = { it ->
-                newTask.title = it
+
+            TextField(task.title, onValueChange = { it ->
+                task.title = it
             }, placeholder = { Text(stringResource(R.string.title)) }, label = { Text(stringResource(R.string.task_title)) })
 
             Spacer(Modifier.size(40.dp))
 
-            TextField(value = newTask.description, onValueChange = {
-                    it -> newTask.title = it
+            TextField(value = task.description, onValueChange = {
+                    it -> task.title = it
             }, placeholder = { Text(stringResource(R.string.description)) }, label = { Text(stringResource(R.string.task_description)) })
+
         }
     }
 
