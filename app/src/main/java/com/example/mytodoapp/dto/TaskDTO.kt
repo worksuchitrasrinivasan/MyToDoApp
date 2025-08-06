@@ -1,13 +1,19 @@
 package com.example.mytodoapp.dto
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 
-@Parcelize
-data class TaskDTO(
-        var id: Int = 0,
-        var title: String = "",
-        var description: String = "",
-        var isDone: Boolean = false
-    ): Parcelable
+class TaskDTO(
+    val id: Int = 0,
+    title: String = "",
+    description: String = "",
+    isDone: Boolean = false
+) {
+
+    var title by mutableStateOf(title)
+    var description by mutableStateOf(description)
+    var isDone by mutableStateOf(isDone)
+
+}

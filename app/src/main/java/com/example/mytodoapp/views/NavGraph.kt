@@ -10,8 +10,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -43,21 +41,21 @@ import kotlinx.coroutines.launch
                 }
             }
 
-            composable(
-                "$EDIT_VIEW/{task}",
-                arguments = listOf(
-                    navArgument("task") { type = TaskNavType}
-                )
-            ) { backStackEntry ->
-                val task = backStackEntry.arguments?.getParcelable("task", TaskDTO::class.java)
-                EditView(navController, task) { newTask ->
-                    scope.launch {
-                        newTask?.let {
-                            todoViewModel.updateTask(it)
-                        }
-                    }
-                }
-            }
+//            composable(
+//                "$EDIT_VIEW/{task}",
+//                arguments = listOf(
+//                    navArgument("task") { type = TaskNavType}
+//                )
+//            ) { backStackEntry ->
+//                val task = backStackEntry.arguments?.getParcelable("task", TaskDTO::class.java)
+//                EditView(navController, task) { newTask ->
+//                    scope.launch {
+//                        newTask?.let {
+//                            todoViewModel.updateTask(it)
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
