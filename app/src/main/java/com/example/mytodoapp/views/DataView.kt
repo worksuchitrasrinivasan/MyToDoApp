@@ -9,11 +9,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.mytodoapp.R
 import com.example.mytodoapp.viewmodel.TodoViewModel
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -28,6 +33,8 @@ import timber.log.Timber
 fun DataView(navController: NavController, viewModel: TodoViewModel = hiltViewModel()) {
 
     val tasksState by viewModel.tasksFlow.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
 
     Timber.d( "DataView: $tasksState")
@@ -43,7 +50,8 @@ fun DataView(navController: NavController, viewModel: TodoViewModel = hiltViewMo
         floatingActionButton = { FloatingActionButton(DATA_VIEW) {
             navController.navigate(ADD_VIEW)
         } },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             Text(text = stringResource(R.string.all_tasks))
@@ -51,8 +59,16 @@ fun DataView(navController: NavController, viewModel: TodoViewModel = hiltViewMo
             LazyColumn {
                 items(items=tasksState, key = { it.id }) { task ->
                     TaskItem(task) { newTask ->
+
                         viewModel.updateTask(newTask)
                         viewModel.getAllTasks()
+
+                        // show SnackBar
+                        if(newTask.isDone) {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(message = "Task is marked complete")
+                            }
+                        }
                     }
                 }
             }

@@ -7,4 +7,5 @@
     <string name="task_title">Task title</string>
     <string name="task_description">Task description</string>
     <string name="description">description</string>
+    <string name="task_marked_complete">Task marked complete</string>
 </resources>
