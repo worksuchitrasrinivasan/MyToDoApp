@@ -7,11 +7,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -20,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mytodoapp.R
 import com.example.mytodoapp.model.Task
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -27,6 +32,8 @@ fun AddView( navController: NavHostController, save: (task: Task) -> Unit) {
 
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -34,10 +41,15 @@ fun AddView( navController: NavHostController, save: (task: Task) -> Unit) {
         floatingActionButton = { FloatingActionButton(ADD_VIEW) {
             if(title.isNotEmpty()) {
                 save(Task(0, title, description, false))
+                navController.popBackStack()
+            } else {
+                scope.launch {
+                    snackbarHostState.showSnackbar("Task with empty title can't be added")
+                }
             }
-            navController.popBackStack()
         } },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
 
         Column(modifier = Modifier.padding(innerPadding)) {
