@@ -9,9 +9,9 @@ sealed class Screen: NavKey {
     @Serializable
     data object DataScreen: Screen()
     @Serializable
-    data object NoDataScreen: Screen()
-    @Serializable
     class EditScreen(val task: TaskDTO): Screen()
+    @Serializable
+    object DeleteScreen: Screen()
     @Serializable
     data object AddScreen: Screen()
 }

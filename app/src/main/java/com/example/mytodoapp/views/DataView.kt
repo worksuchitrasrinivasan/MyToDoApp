@@ -1,8 +1,12 @@
 package com.example.mytodoapp.views
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +39,7 @@ import timber.log.Timber
 fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
     val tasksState by viewModel.tasksFlow.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
 
@@ -51,30 +57,45 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
             backStack.add(Screen.AddScreen)
         } },
         floatingActionButtonPosition = FabPosition.End,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-            Text(text = stringResource(R.string.all_tasks))
-            Spacer(Modifier.size(30.dp))
-            LazyColumn {
-                items(items=tasksState, key = { it.id }) { task ->
-                    TaskItem(task, { backStack.add(Screen.EditScreen(it)) }) { newTask ->
+        if(tasksState.isNotEmpty()) {
+            Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+                Text(text = stringResource(R.string.all_tasks))
+                Spacer(Modifier.size(30.dp))
+                LazyColumn {
+                    items(items=tasksState, key = { it.id }) { task ->
+                        TaskItem(task, { backStack.add(Screen.EditScreen(it)) }, { backStack.add(Screen.DeleteScreen) }) { newTask ->
 
-                        viewModel.updateTask(newTask)
-                        viewModel.getAllTasks()
+                            viewModel.updateTask(newTask)
+                            viewModel.getAllTasks()
 
-                        // show SnackBar
-                        if(newTask.isDone) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(message = "Task is marked complete")
+                            // show SnackBar
+                            if(newTask.isDone) {
+                                scope.launch {
+                                    snackBarHostState.showSnackbar(message = "Task is marked complete")
+                                }
                             }
                         }
                     }
                 }
             }
+        } else {
+            NoDataView(innerPadding)
         }
+
     }
 
+}
 
-
+@Composable
+fun NoDataView(innerPadding: PaddingValues) {
+    Box(modifier = Modifier
+        .padding(innerPadding)
+        .fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
+            Text(text = stringResource(R.string.you_have_no_tasks))
+        }
+    }
 }

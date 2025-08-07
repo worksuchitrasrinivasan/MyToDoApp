@@ -42,7 +42,7 @@ fun EditView( backStack: NavBackStack, task: TaskDTO, save: (task: Task?) -> Uni
             Spacer(Modifier.size(40.dp))
 
             TextField(value = task.description, onValueChange = {
-                    it -> task.title = it
+                    it -> task.description = it
             }, placeholder = { Text(stringResource(R.string.description)) }, label = { Text(stringResource(R.string.task_description)) })
 
         }

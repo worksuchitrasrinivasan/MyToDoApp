@@ -21,18 +21,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun AddView( backStack: NavBackStack, save: (task: Task) -> Unit) {
+fun AddView( backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -40,16 +42,19 @@ fun AddView( backStack: NavBackStack, save: (task: Task) -> Unit) {
         topBar = { TopAppBarView() },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             if(title.isNotEmpty()) {
-                save(Task(0, title, description, false))
-                backStack.removeLastOrNull()
+                scope.launch {
+                    viewModel.insertTask(Task(0, title, description, false))
+                    backStack.removeLastOrNull()
+                    snackBarHostState.showSnackbar("Task added")
+                }
             } else {
                 scope.launch {
-                    snackbarHostState.showSnackbar("Task with empty title can't be added")
+                    snackBarHostState.showSnackbar("Task with empty title can't be added")
                 }
             }
         } },
         floatingActionButtonPosition = FabPosition.End,
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { innerPadding ->
 
         Column(modifier = Modifier.padding(innerPadding)) {

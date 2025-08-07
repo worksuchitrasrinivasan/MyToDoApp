@@ -1,7 +1,8 @@
 package com.example.mytodoapp.views
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
@@ -16,9 +17,15 @@ import com.example.mytodoapp.dto.toTask
 import com.example.mytodoapp.model.Task
 
 @Composable
-fun TaskItem(task: TaskDTO, edit: (task: TaskDTO) -> Unit, update: (task: Task) -> Unit) {
+fun TaskItem(task: TaskDTO, edit: (task: TaskDTO) -> Unit, delete: () -> Unit, update: (task: Task) -> Unit) {
 
-    Row(modifier = Modifier.clickable{ edit(task) } , verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .combinedClickable(
+            onClick = { edit(task) },
+            onLongClick = { delete() }
+            ),
+        verticalAlignment = Alignment.CenterVertically) {
 
         Checkbox(
             task.isDone,
