@@ -18,7 +18,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.viewmodel.TodoViewModel
@@ -38,7 +38,7 @@ import timber.log.Timber
 @Composable
 fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
-    val tasksState by viewModel.tasksFlow.collectAsState()
+    val tasksState by viewModel.tasksFlow.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -61,6 +61,7 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
     ) { innerPadding ->
         if(tasksState.isNotEmpty()) {
             Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+
                 Text(text = stringResource(R.string.all_tasks))
                 Spacer(Modifier.size(30.dp))
                 LazyColumn {

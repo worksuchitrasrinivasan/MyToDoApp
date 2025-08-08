@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
@@ -42,7 +42,7 @@ import timber.log.Timber
 @Composable
 fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
-    val tasks by viewModel.tasksFlow.collectAsState()
+    val tasks by viewModel.tasksFlow.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
     Scaffold(

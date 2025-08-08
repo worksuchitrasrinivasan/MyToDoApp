@@ -9,6 +9,7 @@ import com.example.mytodoapp.repository.TodoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -19,7 +20,7 @@ import javax.inject.Inject
 class TodoViewModel @Inject constructor(private val repository: TodoRepository): ViewModel() {
 
     private val _tasksFlow = MutableStateFlow<List<TaskDTO>>(emptyList())
-    val tasksFlow: StateFlow<List<TaskDTO>> = _tasksFlow
+    val tasksFlow: StateFlow<List<TaskDTO>> = _tasksFlow.asStateFlow()
 
     fun getAllTasks() {
         viewModelScope.launch {
