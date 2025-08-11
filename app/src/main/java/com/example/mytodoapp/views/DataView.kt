@@ -30,6 +30,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
+import com.example.mytodoapp.dto.TaskDTO
+import com.example.mytodoapp.model.Task
 import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,12 +40,12 @@ import timber.log.Timber
 @Composable
 fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
-    val tasksState by viewModel.tasksFlow.collectAsStateWithLifecycle()
+    val tasksItemList by viewModel.tasksFlow.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
 
-    Timber.d( "DataView: $tasksState")
+    Timber.d( "DataView: $tasksItemList")
 
     LaunchedEffect(Unit) {
         Timber.d("DataView: LaunchedEffect")
@@ -59,34 +61,48 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
         floatingActionButtonPosition = FabPosition.End,
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
-        if(tasksState.isNotEmpty()) {
-            Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
 
-                Text(text = stringResource(R.string.all_tasks))
-                Spacer(Modifier.size(30.dp))
-                LazyColumn {
-                    items(items=tasksState, key = { it.id }) { task ->
-                        TaskItem(task, { backStack.add(Screen.EditScreen(it)) }, { backStack.add(Screen.DeleteScreen) }) { newTask ->
+        // If tasksItemList is not empty then show DataView else show NoDataView
+        if(tasksItemList.isNotEmpty()) {
+            DataView(
+                innerPadding = innerPadding,
+                tasksState = tasksItemList,
+                edit = { it -> backStack.add(Screen.EditScreen(it)) },
+                delete = { backStack.add(Screen.DeleteScreen) },
+                update =  { newTask ->
 
-                            viewModel.updateTask(newTask)
-                            viewModel.getAllTasks()
+                    viewModel.updateTask(newTask)
+                    viewModel.getAllTasks()
 
-                            // show SnackBar
-                            if(newTask.isDone) {
-                                scope.launch {
-                                    snackBarHostState.showSnackbar(message = "Task is marked complete")
-                                }
-                            }
+                    // show SnackBar
+                    if(newTask.isDone) {
+                        scope.launch {
+                            snackBarHostState.showSnackbar(message = "Task is marked complete")
                         }
                     }
                 }
-            }
+            )
         } else {
             NoDataView(innerPadding)
         }
 
     }
 
+}
+
+@Composable
+fun DataView(innerPadding: PaddingValues, tasksState: List<TaskDTO>, edit: (task: TaskDTO) -> Unit, delete: () -> Unit, update: (task: Task) -> Unit) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(innerPadding)) {
+        Text(text = stringResource(R.string.all_tasks))
+        Spacer(Modifier.size(30.dp))
+        LazyColumn {
+            items(items=tasksState, key = { it.id }) { task ->
+                TaskItem(task, edit, delete, update)
+            }
+        }
+    }
 }
 
 @Composable
