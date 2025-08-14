@@ -25,7 +25,7 @@ fun EditView( backStack: NavBackStack, task: TaskDTO, save: (task: Task?) -> Uni
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBarView() },
+        topBar = { TopAppBarView {  } },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             save(task.toTask())
             backStack.removeLastOrNull()

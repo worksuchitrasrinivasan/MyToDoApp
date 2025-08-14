@@ -47,7 +47,7 @@ fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBarView() },
+        topBar = { TopAppBarView {} },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             backStack.removeLastOrNull()
         } },
