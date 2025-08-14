@@ -39,7 +39,6 @@ fun AddView( backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBarView() },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             if(title.isNotEmpty()) {
                 scope.launch {
