@@ -13,15 +13,15 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun NavGraph(modifier: Modifier = Modifier, todoViewModel: TodoViewModel = hiltViewModel()) {
+fun NavGraph(modifier: Modifier = Modifier) {
     val backstack = rememberNavBackStack(Screen.DataScreen)
-    val scope = rememberCoroutineScope()
+    val viewModel: TodoViewModel = hiltViewModel()
 
     NavDisplay(
         backStack = backstack,
+        modifier = modifier,
         onBack = { backstack.removeLastOrNull() },
         entryProvider = entryProvider {
-
             entry<Screen.DataScreen> {
                 DataView(backstack)
             }
@@ -30,17 +30,13 @@ fun NavGraph(modifier: Modifier = Modifier, todoViewModel: TodoViewModel = hiltV
                 AddView(backstack)
             }
 
-            entry<Screen.DeleteScreen> { key ->
+            entry<Screen.DeleteScreen> {
                 DeleteView(backstack)
             }
 
             entry<Screen.EditScreen> { key ->
-                EditView(backstack, key.task) { newTask ->
-                    scope.launch {
-                        newTask?.let {
-                            todoViewModel.updateTask(it)
-                        }
-                    }
+                EditView(backstack, key.task) { task ->
+                    viewModel.updateTask(task)
                 }
             }
 
