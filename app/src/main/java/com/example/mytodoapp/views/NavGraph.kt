@@ -8,6 +8,8 @@ import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.example.mytodoapp.dto.TaskDTO
+import com.example.mytodoapp.model.Task
 import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
 
@@ -27,7 +29,9 @@ fun NavGraph(modifier: Modifier = Modifier) {
             }
 
             entry<Screen.AddScreen> {
-                AddView(backstack)
+                EditView(backstack, null){ task ->
+                    viewModel.insertTask(task)
+                }
             }
 
             entry<Screen.DeleteScreen> {

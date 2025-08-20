@@ -1,6 +1,5 @@
 package com.example.mytodoapp.views
 
-import android.content.res.Resources.Theme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,47 +9,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberBottomAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.dto.toTask
 import com.example.mytodoapp.model.Task
 import com.example.mytodoapp.ui.theme.MyToDoAppTheme
-import com.example.mytodoapp.viewmodel.TodoViewModel
 
 
 @Composable
-fun EditView( backStack: NavBackStack, task: TaskDTO, edit: (task: Task) -> Unit) {
+fun EditView( backStack: NavBackStack, taskDTO: TaskDTO?, edit: (task: Task) -> Unit) {
+    var title by rememberSaveable { mutableStateOf(taskDTO?.mTitle ?: "") }
+    var description by rememberSaveable { mutableStateOf(taskDTO?.mDescription ?: "") }
+    val task = taskDTO?.toTask() ?: Task(0, title, description, false)
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarEditView(backStack) },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
-            edit(task.toTask())
+            edit(task)
             backStack.removeLastOrNull()
         } },
         floatingActionButtonPosition = FabPosition.End
@@ -59,8 +55,9 @@ fun EditView( backStack: NavBackStack, task: TaskDTO, edit: (task: Task) -> Unit
         Column(modifier = Modifier.padding(innerPadding)) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
-                value = task.title,
-                onValueChange = {  title -> task.title = title },
+                value = title,
+                onValueChange = { task.title = it
+                    title = it },
                 placeholder = { Text(stringResource(R.string.title)) },
                 label = { Text(stringResource(R.string.task_title)) },
                 singleLine = true,
@@ -76,8 +73,9 @@ fun EditView( backStack: NavBackStack, task: TaskDTO, edit: (task: Task) -> Unit
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp).padding(bottom = 100.dp)
                 .fillMaxHeight(),
-                value = task.description,
-                onValueChange = { task.description = it },
+                value = description,
+                onValueChange = { task.description = it
+                                description = it},
                 placeholder = { Text(stringResource(R.string.description)) },
                 label = { Text(stringResource(R.string.task_description)) },
                 colors = OutlinedTextFieldDefaults.colors(
@@ -111,5 +109,7 @@ fun TopAppBarEditView(backStack: NavBackStack){
 @Composable
 @Preview
 fun PreviewEditView(){
-    EditView(backStack = NavBackStack(), task = TaskDTO(1, "task", "Task Description", false), {})
+    EditView(backStack = NavBackStack(),
+        taskDTO = TaskDTO(1, "task", "Task Description", false),
+        edit = {})
 }
