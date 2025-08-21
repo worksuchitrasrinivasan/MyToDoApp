@@ -1,18 +1,23 @@
 package com.example.mytodoapp.repository
 
-import android.content.Context
 import com.example.mytodoapp.database.TodoDatabase
 import com.example.mytodoapp.model.Task
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.example.mytodoapp.util.Async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
 
 @Singleton
-class TodoRepository @Inject constructor (@ApplicationContext context: Context) {
-    val db = TodoDatabase.getDatabase(context)
+class TodoRepository @Inject constructor () {
 
-    fun getAllTasks() = db.todoDAO().getAllTasks()
+    @Inject
+    lateinit var db: TodoDatabase
+
+    fun getAllTasks(): Flow<Async<List<Task>>> = db.todoDAO().getAllTasks().map { tasks ->
+        Async.Success(tasks)
+    }
 
     suspend fun insertTask(task: Task) = db.todoDAO().insertTask(task)
 

@@ -46,16 +46,14 @@ import timber.log.Timber
 @Composable
 fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
-    val tasksItemList by viewModel.tasksFlow.collectAsStateWithLifecycle()
+    val taskUiState by viewModel.taskUiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-
-    Timber.d( "DataView: $tasksItemList")
+    Timber.d("taskUiState: $taskUiState")
 
     LaunchedEffect(Unit) {
         Timber.d("DataView: LaunchedEffect")
-        viewModel.getAllTasks()
     }
 
     var showDataView by rememberSaveable { mutableStateOf(false) }
@@ -74,16 +72,15 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
     ) { innerPadding ->
 
         // 3. Use the state to conditionally display the view
-        if (showDataView || tasksItemList.isNotEmpty()) {
+        if (showDataView || taskUiState.tasks.isNotEmpty()) {
             DataView(
                 drawerState = if(showDataView)DrawerValue.Open else DrawerValue.Closed,
                 innerPadding = innerPadding,
-                tasksState = tasksItemList,
+                tasks = taskUiState.tasks,
                 edit = { it -> backStack.add(Screen.EditScreen(it)) },
                 delete = { backStack.add(Screen.DeleteScreen) },
                 update =  { newTask ->
                     viewModel.updateTask(newTask)
-                    viewModel.getAllTasks()
 
                     // show SnackBar
                     if(newTask.isDone) {
@@ -102,7 +99,12 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
 }
 
 @Composable
-fun DataView(drawerState: DrawerValue = DrawerValue.Closed, innerPadding: PaddingValues, tasksState: List<TaskDTO>, edit: (task: TaskDTO) -> Unit, delete: () -> Unit, update: (task: Task) -> Unit) {
+fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
+             innerPadding: PaddingValues,
+             tasks: List<TaskDTO>,
+             edit: (task: TaskDTO) -> Unit,
+             delete: () -> Unit,
+             update: (task: Task) -> Unit) {
     ModalNavigationDrawer(
         drawerState = DrawerState(drawerState),
         drawerContent = { TopAppBarDrawer() }
@@ -113,7 +115,7 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed, innerPadding: Paddin
             Text(text = stringResource(R.string.all_tasks))
             Spacer(Modifier.size(30.dp))
             LazyColumn {
-                items(items=tasksState, key = { it.id }) { task ->
+                items(items=tasks, key = { it.id }) { task ->
                     TaskItem(task, edit, delete, update)
                 }
             }

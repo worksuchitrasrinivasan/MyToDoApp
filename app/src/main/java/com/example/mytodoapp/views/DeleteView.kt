@@ -42,8 +42,9 @@ import timber.log.Timber
 @Composable
 fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()) {
 
-    val tasks by viewModel.tasksFlow.collectAsStateWithLifecycle()
+    val taskUiState by viewModel.taskUiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -59,7 +60,7 @@ fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel
             Text(text = stringResource(R.string.all_tasks))
             Spacer(Modifier.size(30.dp))
             LazyColumn {
-                items(items=tasks, key = { it.id }) { task ->
+                items(items=taskUiState.tasks, key = { it.id }) { task ->
                     DeleteTaskItem(task) { deleteTask ->
                         scope.launch {
                             viewModel.delete(deleteTask)
