@@ -16,11 +16,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -34,6 +38,7 @@ import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.dto.toTask
 import com.example.mytodoapp.model.Task
 import com.example.mytodoapp.ui.theme.MyToDoAppTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -41,15 +46,24 @@ fun EditView( backStack: NavBackStack, taskDTO: TaskDTO?, edit: (task: Task) -> 
     var title by rememberSaveable { mutableStateOf(taskDTO?.mTitle ?: "") }
     var description by rememberSaveable { mutableStateOf(taskDTO?.mDescription ?: "") }
     val task = taskDTO?.toTask() ?: Task(0, title, description, false)
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarEditView(backStack) },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
-            edit(task)
-            backStack.removeLastOrNull()
+            scope.launch {
+                if(task.title.isNotBlank()) {
+                    edit(task)
+                } else {
+                    snackBarHostState.showSnackbar("Can not add empty task")
+                }
+                backStack.removeLastOrNull()
+            }
         } },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
 
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -75,7 +89,7 @@ fun EditView( backStack: NavBackStack, taskDTO: TaskDTO?, edit: (task: Task) -> 
                 .fillMaxHeight(),
                 value = description,
                 onValueChange = { task.description = it
-                                description = it},
+                                  description = it },
                 placeholder = { Text(stringResource(R.string.description)) },
                 label = { Text(stringResource(R.string.task_description)) },
                 colors = OutlinedTextFieldDefaults.colors(
