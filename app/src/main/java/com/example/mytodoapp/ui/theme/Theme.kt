@@ -50,8 +50,10 @@ fun MyToDoAppTheme(
         else -> LightColorScheme
     }
 
+    val tempColorScheme = LightColorScheme
+
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = tempColorScheme,
         typography = Typography,
         content = content
     )
