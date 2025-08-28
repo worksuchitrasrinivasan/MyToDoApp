@@ -65,6 +65,10 @@ class TodoViewModel @Inject constructor(private val repository: TodoRepository):
             is TaskUiEvent.AddTask -> {
                 insertTask(event.task)
             }
+
+            is TaskUiEvent.UpdateTask -> {
+                updateTask(event.task)
+            }
         }
     }
 
