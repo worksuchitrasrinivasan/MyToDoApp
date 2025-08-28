@@ -34,6 +34,7 @@ import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.dto.toTask
 import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.viewmodel.TaskUiEvent
 import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -61,9 +62,9 @@ fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel
             Spacer(Modifier.size(30.dp))
             LazyColumn {
                 items(items=taskUiState.tasks, key = { it.id }) { task ->
-                    DeleteTaskItem(task) { deleteTask ->
+                    DeleteTaskItem(task) { task ->
                         scope.launch {
-                            viewModel.delete(deleteTask)
+                           viewModel.onEvent(TaskUiEvent.DeleteTask(task))
                         }
                     }
                 }

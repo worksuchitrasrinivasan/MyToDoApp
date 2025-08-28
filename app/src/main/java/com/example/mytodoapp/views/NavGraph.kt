@@ -1,17 +1,14 @@
 package com.example.mytodoapp.views
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.example.mytodoapp.dto.TaskDTO
-import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.viewmodel.TaskUiEvent
 import com.example.mytodoapp.viewmodel.TodoViewModel
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -30,7 +27,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
 
             entry<Screen.AddScreen> {
                 EditView(backstack, null){ task ->
-                    viewModel.insertTask(task)
+                    viewModel.onEvent(TaskUiEvent.AddTask(task))
                 }
             }
 
@@ -40,7 +37,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
 
             entry<Screen.EditScreen> { key ->
                 EditView(backstack, key.task) { task ->
-                    viewModel.updateTask(task)
+                    viewModel.onEvent(TaskUiEvent.UpdateTask(task))
                 }
             }
 

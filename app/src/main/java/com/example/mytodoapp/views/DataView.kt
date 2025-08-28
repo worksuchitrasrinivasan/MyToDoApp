@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,13 +31,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.model.Task
+import com.example.mytodoapp.viewmodel.TaskUiEvent
 import com.example.mytodoapp.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -83,7 +85,7 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
                 edit = { it -> backStack.add(Screen.EditScreen(it)) },
                 delete = { backStack.add(Screen.DeleteScreen) },
                 update =  { newTask ->
-                    viewModel.updateTask(newTask)
+                    viewModel.onEvent(TaskUiEvent.MarkTaskDone(newTask))
 
                     // show SnackBar
                     if(newTask.isDone) {
@@ -115,16 +117,47 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)) {
-            Text(text = stringResource(R.string.all_tasks))
-            Spacer(Modifier.size(30.dp))
-            LazyColumn {
+            Text(
+                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                text = stringResource(R.string.all_tasks),
+                fontSize = 20.sp
+            )
+            LazyColumn(
+                modifier = Modifier.padding(start = 25.dp)
+            ) {
                 items(items=tasks, key = { it.id }) { task ->
                     TaskItem(task, edit, delete, update)
                 }
             }
         }
     }
+}
 
+
+@Composable
+@Preview
+fun DataViewPreview() {
+    val tasks = listOf(TaskDTO(0, "hello task", "", false))
+    ModalNavigationDrawer(
+        drawerState = DrawerState(DrawerValue.Closed),
+        drawerContent = { TopAppBarDrawer() }
+    ) {
+        Column(modifier = Modifier
+            .fillMaxSize()) {
+            Text(
+                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                text = stringResource(R.string.all_tasks),
+                fontSize = 25.sp
+            )
+            LazyColumn(
+                modifier = Modifier.padding(start = 25.dp)
+            ) {
+                items(items=tasks, key = { it.id }) { task ->
+                    TaskItem(task, {}, {}, {})
+                }
+            }
+        }
+    }
 }
 
 @Composable

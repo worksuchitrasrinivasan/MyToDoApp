@@ -1,6 +1,7 @@
 package com.example.mytodoapp.views
 
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
@@ -17,7 +18,8 @@ fun FloatingActionButton(route: Screen, onClick: () -> Unit) {
     FloatingActionButton(
         modifier = Modifier.imePadding(),
         onClick = onClick,
-        containerColor = colorResource(R.color.colorAccent)
+        containerColor = colorResource(R.color.colorAccent),
+        shape = CircleShape
     ) {
         if (route == Screen.EditScreen || route == Screen.AddScreen) {
             Icon(Icons.Filled.Done, "Done", tint = colorResource(R.color.white))

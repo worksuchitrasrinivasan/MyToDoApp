@@ -23,6 +23,13 @@ data class TaskUiState(
     val errorMessage: String = ""
 )
 
+sealed class TaskUiEvent {
+    data class MarkTaskDone(val task: Task): TaskUiEvent()
+    data class DeleteTask(val task: Task): TaskUiEvent()
+    data class AddTask(val task: Task): TaskUiEvent()
+    data class UpdateTask(val task: Task): TaskUiEvent()
+}
+
 
 @HiltViewModel
 class TodoViewModel @Inject constructor(private val repository: TodoRepository): ViewModel() {
@@ -45,6 +52,21 @@ class TodoViewModel @Inject constructor(private val repository: TodoRepository):
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TaskUiState(isLoading = true)
     )
+
+    fun onEvent(event: TaskUiEvent) {
+        when(event) {
+            is TaskUiEvent.DeleteTask -> {
+                delete(event.task)
+            }
+            is TaskUiEvent.MarkTaskDone -> {
+                updateTask(event.task)
+            }
+
+            is TaskUiEvent.AddTask -> {
+                insertTask(event.task)
+            }
+        }
+    }
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
