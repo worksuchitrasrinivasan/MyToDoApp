@@ -16,6 +16,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -83,7 +84,7 @@ fun DeleteTaskItem(task: TaskDTO, deleteTask: (task: Task) -> Unit) {
 
         Checkbox(
             task.isDone,
-            colors = CheckboxDefaults.colors(checkedColor = colorResource(R.color.colorAccent)),
+            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary),
             onCheckedChange = {
                 Timber.d("On delete screen check can not be changed")
             },
@@ -114,7 +115,7 @@ fun DeleteTaskItem(task: TaskDTO, deleteTask: (task: Task) -> Unit) {
                 deleteTask(task.toTask()
                 )
             },
-            tint = colorResource(R.color.red)
+            tint = MaterialTheme.colorScheme.error
         )
 
     }

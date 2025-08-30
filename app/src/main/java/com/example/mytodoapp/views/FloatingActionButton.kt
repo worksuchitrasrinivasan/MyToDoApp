@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -18,13 +19,13 @@ fun FloatingActionButton(route: Screen, onClick: () -> Unit) {
     FloatingActionButton(
         modifier = Modifier.imePadding(),
         onClick = onClick,
-        containerColor = colorResource(R.color.colorAccent),
+        containerColor = MaterialTheme.colorScheme.primary,
         shape = CircleShape
     ) {
         if (route == Screen.EditScreen || route == Screen.AddScreen) {
-            Icon(Icons.Filled.Done, "Done", tint = colorResource(R.color.white))
+            Icon(Icons.Filled.Done, "Done", tint = MaterialTheme.colorScheme.onPrimary)
         } else {
-            Icon(Icons.Filled.Add, "Add", tint = colorResource(R.color.white))
+            Icon(Icons.Filled.Add, "Add", tint = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }

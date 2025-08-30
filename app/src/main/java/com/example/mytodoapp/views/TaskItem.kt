@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +30,7 @@ fun TaskItem(task: TaskDTO, edit: (task: TaskDTO) -> Unit, delete: () -> Unit, u
 
         Checkbox(
             task.isDone,
-            colors = CheckboxDefaults.colors(checkedColor = colorResource(R.color.colorAccent)),
+            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary),
             onCheckedChange = {
                 task.isDone = it
                 update(task.toTask())
