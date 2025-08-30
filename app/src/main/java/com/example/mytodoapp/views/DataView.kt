@@ -2,6 +2,8 @@ package com.example.mytodoapp.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -117,22 +119,45 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
         drawerState = DrawerState(drawerState),
         drawerContent = { TopAppBarDrawer() }
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)) {
-            Text(
-                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
-                text = stringResource(R.string.all_tasks),
-                fontSize = 20.sp
-            )
-            LazyColumn(
-                modifier = Modifier.padding(start = 25.dp)
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .padding(top = 15.dp)
+            .padding(horizontal = 15.dp)) {
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp) // Make space for the title text
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .padding(16.dp)
             ) {
-                items(items=tasks, key = { it.id }) { task ->
-                    TaskItem(task, edit, delete, update)
+
+                LazyColumn(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    items(items = tasks, key = { it.id }) { task ->
+                        TaskItem(task, edit, delete, update)
+                    }
                 }
             }
+
+            Text(
+                text = "Today Task",
+                modifier = Modifier
+                    .padding(start = 16.dp) // Position the text from the left
+                    .background(MaterialTheme.colorScheme.surface) // Match the Column's background to create the "inlay" effect
+                    .padding(horizontal = 4.dp), // Padding around the text itself
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
         }
+
     }
 }
 
