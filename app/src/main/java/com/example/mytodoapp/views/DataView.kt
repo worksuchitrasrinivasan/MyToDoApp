@@ -1,6 +1,7 @@
 package com.example.mytodoapp.views
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
+import com.example.compose.MyToDoAppTheme
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.model.Task
@@ -71,8 +74,8 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
             }
         },
         floatingActionButtonPosition = FabPosition.End,
-        containerColor = Color.White,
-        contentColor = Color.DarkGray,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
 
@@ -162,12 +165,17 @@ fun DataViewPreview() {
 
 @Composable
 fun NoDataView(innerPadding: PaddingValues) {
-    Box(modifier = Modifier
-        .padding(innerPadding)
-        .fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
-            Text(text = stringResource(R.string.you_have_no_tasks))
+    MyToDoAppTheme {
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .background(color = MaterialTheme.colorScheme.surface)
+            .fillMaxSize(),
+            contentAlignment = Alignment.Center) {
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
+                Text(text = stringResource(R.string.you_have_no_tasks))
+            }
         }
     }
+
 }
