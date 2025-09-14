@@ -1,6 +1,7 @@
 package com.example.mytodoapp.views
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -13,14 +14,15 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
 import com.example.compose.MyToDoAppTheme
-import com.example.mytodoapp.R
+import com.example.mytodoapp.viewmodel.TaskUiEvent
+import com.example.mytodoapp.viewmodel.TodoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarView(onClick: () -> Unit) {
+fun TopAppBarView(onClick: () -> Unit, backStack: NavBackStack, viewModel: TodoViewModel) {
     MyToDoAppTheme {
         CenterAlignedTopAppBar(
             modifier = Modifier.shadow(elevation = 10.dp),
@@ -34,10 +36,21 @@ fun TopAppBarView(onClick: () -> Unit) {
                 }
             },
             actions = {
-                Icon(
-                    painter = painterResource(R.drawable.filter_list_icon),
-                    contentDescription = "Sort"
-                )
+
+                IconButton(
+                    onClick = {
+                        if(viewModel.taskUiState.value.showDeleteIcon) {
+                            viewModel.onEvent(TaskUiEvent.ShowDeleteIcon(false))
+                        } else {
+                            viewModel.onEvent(TaskUiEvent.ShowDeleteIcon(true))
+                        }
+                    },
+                    content = {
+                    Icon(
+                        Icons.Default.Delete,
+                        "Delete tasks"
+                    )
+                })
 
                 IconButton(onClick = {}, content = {
                     Icon(

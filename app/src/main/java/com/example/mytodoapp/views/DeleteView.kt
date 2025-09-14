@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -50,7 +49,7 @@ fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBarView {} },
+//        topBar = { TopAppBarView {} },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             backStack.removeLastOrNull()
         } },

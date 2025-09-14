@@ -3,7 +3,6 @@ package com.example.mytodoapp.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +31,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,7 +67,7 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         // 2. Add an onClick lambda to the TopAppBar
-        topBar = { TopAppBarView(onClick = { showDataView = !showDataView }) },
+        topBar = { TopAppBarView(onClick = { showDataView = !showDataView }, backStack, viewModel) },
         floatingActionButton = {
             FloatingActionButton(Screen.DataScreen) {
                 backStack.add(Screen.AddScreen)
@@ -84,11 +82,13 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
         // 3. Use the state to conditionally display the view
         if (showDataView || taskUiState.tasks.isNotEmpty()) {
             DataView(
-                drawerState = if(showDataView)DrawerValue.Open else DrawerValue.Closed,
+                drawerState = if(showDataView) DrawerValue.Open else DrawerValue.Closed,
                 innerPadding = innerPadding,
                 tasks = taskUiState.tasks,
                 edit = { it -> backStack.add(Screen.EditScreen(it)) },
-                delete = { backStack.add(Screen.DeleteScreen) },
+                delete = { task ->
+                    viewModel.onEvent(TaskUiEvent.DeleteTask(task))
+                },
                 update =  { newTask ->
                     viewModel.onEvent(TaskUiEvent.MarkTaskDone(newTask))
 
@@ -98,7 +98,8 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
                             snackBarHostState.showSnackbar(message = "Task is marked complete")
                         }
                     }
-                }
+                },
+                showDeleteIcon = taskUiState.showDeleteIcon
             )
         } else {
             NoDataView(innerPadding)
@@ -113,8 +114,10 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
              innerPadding: PaddingValues,
              tasks: List<TaskDTO>,
              edit: (task: TaskDTO) -> Unit,
-             delete: () -> Unit,
-             update: (task: Task) -> Unit) {
+             delete: (task: Task) -> Unit,
+             update: (task: Task) -> Unit,
+             showDeleteIcon: Boolean
+             ) {
     ModalNavigationDrawer(
         drawerState = DrawerState(drawerState),
         drawerContent = { TopAppBarDrawer() }
@@ -141,7 +144,7 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
                     items(items = tasks, key = { it.id }) { task ->
-                        TaskItem(task, edit, delete, update)
+                        TaskItem(task, edit, delete, update, showDeleteIcon)
                     }
                 }
             }
@@ -181,7 +184,7 @@ fun DataViewPreview() {
                 modifier = Modifier.padding(start = 25.dp)
             ) {
                 items(items=tasks, key = { it.id }) { task ->
-                    TaskItem(task, {}, {}, {})
+                    TaskItem(task, {}, {}, {}, true)
                 }
             }
         }
