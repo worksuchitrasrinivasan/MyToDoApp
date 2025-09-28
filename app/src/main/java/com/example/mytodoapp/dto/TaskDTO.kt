@@ -12,7 +12,7 @@ class TaskDTO(
     var mTitle: String = "",
     var mDescription: String = "",
     var mDate: String = "",
-    var mIsDone: Boolean = false
+    var mIsDone: Boolean = false,
 ) {
 
     var title by mutableStateOf(mTitle)

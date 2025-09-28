@@ -31,7 +31,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavBackStack
+import com.example.compose.MyToDoAppTheme
 import com.example.mytodoapp.R
 import com.example.mytodoapp.dto.TaskDTO
 import com.example.mytodoapp.model.Task
@@ -67,26 +67,28 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         // 2. Add an onClick lambda to the TopAppBar
-        topBar = { TopAppBarView(onClick = { showDataView = !showDataView }) },
+        topBar = { TopAppBarView(onClick = { showDataView = !showDataView }, backStack, viewModel) },
         floatingActionButton = {
             FloatingActionButton(Screen.DataScreen) {
                 backStack.add(Screen.AddScreen)
             }
         },
         floatingActionButtonPosition = FabPosition.End,
-        containerColor = Color.White,
-        contentColor = Color.DarkGray,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
         snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { innerPadding ->
 
         // 3. Use the state to conditionally display the view
         if (showDataView || taskUiState.tasks.isNotEmpty()) {
             DataView(
-                drawerState = if(showDataView)DrawerValue.Open else DrawerValue.Closed,
+                drawerState = if(showDataView) DrawerValue.Open else DrawerValue.Closed,
                 innerPadding = innerPadding,
                 tasks = taskUiState.tasks,
                 edit = { it -> backStack.add(Screen.EditScreen(it)) },
-                delete = { backStack.add(Screen.DeleteScreen) },
+                delete = { task ->
+                    viewModel.onEvent(TaskUiEvent.DeleteTask(task))
+                },
                 update =  { newTask ->
                     viewModel.onEvent(TaskUiEvent.MarkTaskDone(newTask))
 
@@ -96,7 +98,8 @@ fun DataView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel()
                             snackBarHostState.showSnackbar(message = "Task is marked complete")
                         }
                     }
-                }
+                },
+                showDeleteIcon = taskUiState.showDeleteIcon
             )
         } else {
             NoDataView(innerPadding)
@@ -111,8 +114,10 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
              innerPadding: PaddingValues,
              tasks: List<TaskDTO>,
              edit: (task: TaskDTO) -> Unit,
-             delete: () -> Unit,
-             update: (task: Task) -> Unit) {
+             delete: (task: Task) -> Unit,
+             update: (task: Task) -> Unit,
+             showDeleteIcon: Boolean
+             ) {
     ModalNavigationDrawer(
         drawerState = DrawerState(drawerState),
         drawerContent = { TopAppBarDrawer() }
@@ -179,7 +184,7 @@ fun DataViewPreview() {
                 modifier = Modifier.padding(start = 25.dp)
             ) {
                 items(items=tasks, key = { it.id }) { task ->
-                    TaskItem(task, {}, {}, {})
+                    TaskItem(task, {}, {}, {}, true)
                 }
             }
         }
@@ -188,12 +193,17 @@ fun DataViewPreview() {
 
 @Composable
 fun NoDataView(innerPadding: PaddingValues) {
-    Box(modifier = Modifier
-        .padding(innerPadding)
-        .fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
-            Text(text = stringResource(R.string.you_have_no_tasks))
+    MyToDoAppTheme {
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .background(color = MaterialTheme.colorScheme.surface)
+            .fillMaxSize(),
+            contentAlignment = Alignment.Center) {
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Image( modifier = Modifier.size(80.dp), painter = painterResource(R.drawable.logo_no_fill), contentDescription = stringResource(R.string.no_task))
+                Text(text = stringResource(R.string.you_have_no_tasks))
+            }
         }
     }
+
 }

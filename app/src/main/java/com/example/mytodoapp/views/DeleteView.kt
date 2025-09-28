@@ -16,6 +16,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -49,7 +49,7 @@ fun DeleteView(backStack: NavBackStack, viewModel: TodoViewModel = hiltViewModel
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopAppBarView {} },
+//        topBar = { TopAppBarView {} },
         floatingActionButton = { FloatingActionButton(Screen.AddScreen) {
             backStack.removeLastOrNull()
         } },
@@ -83,7 +83,7 @@ fun DeleteTaskItem(task: TaskDTO, deleteTask: (task: Task) -> Unit) {
 
         Checkbox(
             task.isDone,
-            colors = CheckboxDefaults.colors(checkedColor = colorResource(R.color.colorAccent)),
+            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary),
             onCheckedChange = {
                 Timber.d("On delete screen check can not be changed")
             },
@@ -114,7 +114,7 @@ fun DeleteTaskItem(task: TaskDTO, deleteTask: (task: Task) -> Unit) {
                 deleteTask(task.toTask()
                 )
             },
-            tint = colorResource(R.color.red)
+            tint = MaterialTheme.colorScheme.error
         )
 
     }
