@@ -11,6 +11,7 @@ class TaskDTO(
     val id: Int = 0,
     var mTitle: String = "",
     var mDescription: String = "",
+    var mDate: String = "",
     var mIsDone: Boolean = false,
 ) {
 

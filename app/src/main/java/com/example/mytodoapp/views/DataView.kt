@@ -144,7 +144,7 @@ fun DataView(drawerState: DrawerValue = DrawerValue.Closed,
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
                     items(items = tasks, key = { it.id }) { task ->
-                        TaskItem(task, edit, delete, update, showDeleteIcon)
+                        TaskItem(task, edit, delete, update)
                     }
                 }
             }
